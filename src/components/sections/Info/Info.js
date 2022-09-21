@@ -1,7 +1,6 @@
 import React from 'react';
 
 import Section from '../../../HOC/Section';
-import aboutImage from '../../../assets/img/about.jpg';
 import autimosImage1 from '../../../assets/img/autismo1.jpg';
 import autimosImage2 from '../../../assets/img/autismo2.jpg';
 import autimosImage3 from '../../../assets/img/autismo3.jpg';

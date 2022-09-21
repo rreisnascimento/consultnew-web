@@ -1,12 +1,29 @@
 import React from 'react';
+import axios from 'axios';
 
 import Section from '../../../HOC/Section';
-
 import blogImage1 from '../../../assets/img/blog1.jpg';
 import blogImage2 from '../../../assets/img/blog2.jpg';
 import blogImage3 from '../../../assets/img/blog3.jpg';
 
+const baseURL = "https://consultnew-api.herokuapp.com";
+
 const Blog = () => {
+
+  const reqPOST = { nome: "CRUD API", especialidade: "Nenhuma", endereco: "Nenhum", complemento: "Casa", bairro: "Centro", cidade: "Manaus", uf: "PE" };
+
+  async function Save() {
+    axios.post(`${baseURL}/precadastro/create`, reqPOST ).then((response) => {
+      console.dir(response.data);
+    });    
+
+
+    // const reqPOST = { nome: "CRUD API", especialidade: "Nenhuma", endereco: "Nenhum", complemento: "Casa", bairro: "Centro", cidade: "Manaus", uf: "PE" };
+    // const response = await axios.post(`https://consultnew-api.herokuapp.com/precadastro/create`, reqPOST);
+    // console.dir(reqPOST);
+    // console.dir(response.data);  
+  };  
+
   return (
     <Section id='blog'>
       <div className='container pt-2 pb-5'>
@@ -32,8 +49,8 @@ const Blog = () => {
                     cillum dolore eu fugiat nulla pariatur commodo
                     consequat.cillum dolore eu fugiat pariatur....
                   </p>
-                  <a href='#!' className='btn btn-sm btn-primary'>
-                    Leia mais
+                  <a href='#!' className='btn btn-sm btn-primary' onClick={Save}>
+                    Salvar
                   </a>
                 </div>
               </div>

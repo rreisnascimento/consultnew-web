@@ -52,13 +52,8 @@ const Footer = () => {
                   </Link>
                 </li>
                 <li>
-                  <Link target='contact'>
+                  <Link target='parceiro'>
                     Contato
-                  </Link>
-                </li>
-                <li>
-                  <Link target='contact'>
-                    Parceiro
                   </Link>
                 </li>                                
               </ul>

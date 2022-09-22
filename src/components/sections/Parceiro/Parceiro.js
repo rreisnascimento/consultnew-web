@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import api from './../../../service/api';
 import Section from '../../../HOC/Section';
 
 const baseURL = "https://consultnew-api.herokuapp.com";
@@ -8,72 +7,58 @@ const baseURL = "https://consultnew-api.herokuapp.com";
 const Parceiro = () => {
   
   const [nome, setNome] = useState();  
+  const [clinica, setClinica] = useState();
   const [especialidade, setEspecialidade] = useState();
+  const [cep, setCep] = useState();  
   const [endereco, setEndereco] = useState();
   const [complemento, setComplemento] = useState();  
   const [bairro, setBairro] = useState();
   const [cidade, setCidade] = useState();
   const [uf, setUF] = useState();
+  const [comercial, setComercial] = useState();
+  const [celular, setCelular] = useState();
+  const [email, setEmail] = useState();
 
   function ClearFields() {
     setNome("");
+    setClinica("");
     setEspecialidade("");
+    setCep("");
     setEndereco("");
     setComplemento("");
     setBairro("");
-    setCidade("");    
+    setCidade("");
+    setUF("");
+    setComercial("");
+    setCelular("");
+    setEmail("");
+  };
+  
+  async function BuscarCEP() {
+    const cepFilter = cep?.replace(/[^0-9]/g, '');
+
+    if (cepFilter?.length == 8) {
+      fetch(`https://viacep.com.br/ws/${cepFilter}/json/`)
+        .then((res) => res.json())
+        .then((data) => {
+          setEndereco(data.logradouro);
+          setBairro(data.bairro);
+          setCidade(data.localidade);
+          setUF(data.uf);
+        });
+      };
   };
 
   async function Save() {
 
-    const reqPOST = { nome, especialidade, endereco, complemento, bairro, cidade, uf };
+    const reqPOST = { nome, clinica, especialidade, cep, endereco, complemento, bairro, cidade, uf, comercial, celular, email };
     const response = await axios.post(`${baseURL}/precadastro/create`, reqPOST);
-    console.dir(reqPOST);
-    console.dir(response.status);
     ClearFields();
-
-    // axios.post(`${baseURL}/precadastro/create`, reqPOST, { 
-    //   method: "POST"      
-    // }
-    // ).then((response) => {
-    //   setPost(response.data);
-    //   console.log(post);
-    // });    
-    
-
-    // const reqPOST = {nome, especialidade, endereco, complemento, bairro, cidade, uf};
-    // console.log(reqPOST);
-      
-    // const options = {
-    //   method: 'POST',
-    //   headers: {'Content-Type': 'application/json'},
-    //   body: JSON.stringify(reqPOST)
-    //   };
-
-    // fetch('https://consultnew-api.herokuapp.com/precadastro/create', options)
-    //   .then(data => {
-    //       if (!data.ok) {
-    //         throw Error(data.status);
-    //        }
-    //        return data.json();
-    //       }).then(update => {
-    //         console.log(update);
-    //       }).catch(e => {
-    //         console.log("Deu erro aqui: " + e)
-    //         console.log(e);
-    //       });      
-
-    // const response = await axios.post(`https://consultnew-api.herokuapp.com/precadastro/create`, reqPOST);
-    // console.dir(reqPOST);
-    // console.dir(response.data);
   };
 
   useEffect(() => {
-    // axios.get(`${baseURL}/precadastro/all`).then((response) => {
-    //   setPost(response.data);
-    //   console.log(response.data);
-    // })
-  }, []);  
+
+  }, []);
 
   return (
     <Section id='parceiro'>
@@ -91,86 +76,156 @@ const Parceiro = () => {
           <div className='row'>
             <div className='col-md-9 col-lg-7 mr-auto ml-auto'>
 
-                <div className='form-group'>
-                  <input 
-                    id="nome"
-                    type="text"
-                    className="form-control rounded-0"
-                    placeholder="Nome do Profissinal"
-                    value={nome}
-                    onChange={e => setNome(e.target.value)}
-                  />
-                </div>
-                <div className='form-group'>
-                  <input 
-                    id="especialidade"
-                    type='text' 
-                    className='form-control rounded-0' 
-                    placeholder='Especialidade'
-                    value={especialidade}
-                    onChange={(e) => setEspecialidade(e.target.value)}
-                  />
-                </div>
-                <div className='form-group'>
-                  <input 
-                    id="endereco"
-                    type='text' 
-                    className='form-control rounded-0' 
-                    placeholder='Endereço'
-                    onChange={e => setEndereco(e.target.value)} value={endereco} />
-                </div>
-                <div className='form-group'>
-                  <input type='text' className='form-control rounded-0' placeholder='Complemento'
-                      onChange={e => setComplemento(e.target.value)} value={complemento} />
-                </div>
-                <div className='form-group'>
-                  <input type='text' className='form-control rounded-0' placeholder='Bairro'
-                      onChange={e => setBairro(e.target.value)} value={bairro} />
-                </div>                                
-                <div className='form-group'>
-                  <input type='text' className='form-control rounded-0' placeholder='Cidade'
-                      onChange={e => setCidade(e.target.value)} value={cidade} />
-                </div>
+              <div class="input-group flex-nowrap">
+                <span class="input-group-text" id="addon-wrapping">Profissional</span>
+                <input 
+                  id="profissional"
+                  type="text" 
+                  class="form-control" 
+                  placeholder="Nome do Profissional"
+                  value={nome}
+                  onChange={e => setNome(e.target.value)} />
+              </div>
 
-                <div>
+              <div class="input-group flex-nowrap">
+                <span class="input-group-text" id="addon-wrapping">Clínica</span>
+                <input 
+                  id="clinica"
+                  type="text" 
+                  class="form-control" 
+                  placeholder="Nome da Clinica"
+                  value={clinica}
+                  onChange={e => setClinica(e.target.value)} />
+              </div>              
+
+              <div class="input-group flex-nowrap">
+                <span class="input-group-text" id="addon-wrapping">Especialidade</span>
+                <input 
+                  id="especialidade"
+                  type="text" 
+                  class="form-control" 
+                  placeholder="Informe a Especialidade"
+                  value={especialidade}
+                  onChange={e => setEspecialidade(e.target.value)} />
+              </div>
+
+              <div class="input-group flex-nowrap">
+                <span class="input-group-text" id="addon-wrapping">CEP</span>
+                <input 
+                  id="cep"
+                  type="text" 
+                  class="form-control" 
+                  placeholder="99999-999"
+                  value={cep}
+                  onChange={e => setCep(e.target.value)} />
+                <button className='btn btn-primary rounded-0' onClick={BuscarCEP}>Buscar Endereço</button>
+              </div>
+
+              <div class="input-group flex-nowrap">
+                <span class="input-group-text" id="addon-wrapping">Endereço</span>
+                <input 
+                  id="endereco"
+                  type="text" 
+                  class="form-control" 
+                  placeholder="Logradouro, 999"
+                  value={endereco}
+                  onChange={e => setEndereco(e.target.value)} />
+              </div>                            
+
+              <div class="input-group flex-nowrap">
+                <span class="input-group-text" id="addon-wrapping">Complemento</span>
+                <input 
+                  id="complemento"
+                  type="text" 
+                  class="form-control" 
+                  placeholder="Casa / Apartamento / Sobre Loja"
+                  value={complemento}
+                  onChange={e => setComplemento(e.target.value)} />
+                <span class="input-group-text" id="addon-wrapping">Bairro</span>
+                <input 
+                  id="bairro"
+                  type="text" 
+                  class="form-control" 
+                  placeholder="Centro"
+                  value={bairro}
+                  onChange={e => setBairro(e.target.value)} />
+              </div>              
+              <div class="input-group flex-nowrap">
+                <span class="input-group-text" id="addon-wrapping">Cidade</span>
+                <input 
+                  id="cidade"
+                  type="text" 
+                  class="form-control" 
+                  placeholder="Informe a Cidade"
+                  value={cidade}
+                  onChange={e => setCidade(e.target.value)} />
+                <span class="input-group-text" id="addon-wrapping">Estado</span>
                 <select className='form-group form-control rounded-0' 
                   value={uf} 
-                  onChange={(e) => setUF(e.target.value)}>
-                  <option value="Acre">Acre</option>
-                  <option value="Alagoas">Alagoas</option>
-                  <option value="Amapa">Amapá</option>
-                  <option value="Amazonas">Amazonas</option>
-                  <option value="Bahia">Bahia</option>
-                  <option value="Ceara">Cearáa</option>
-                  <option value="DistritoFederal">Distrito Federal</option>
-                  <option value="EspiritoSanto">Espirito Santo</option>
-                  <option value="Goias">Goiás</option>
-                  <option value="Maranhao">Maranhão</option>
-                  <option value="MatoGrosso">Mato Grosso</option>
-                  <option value="MatoGrossoSul">Mato Grosso do Sul</option>
-                  <option value="MinasGerais">Minas Gerais</option>
-                  <option value="Para">Pará</option>
-                  <option value="Paraiba">Paraíba</option>
-                  <option value="Parana">Paraná</option>                  
-                  <option value="Pernambuco">Pernambuco</option>
-                  <option value="Piaui">Piaui</option>
-                  <option value="RioJaneiro">Rio de Janeiro</option>
-                  <option value="RioGrandeNorte">Rio Grande do Norte</option>
-                  <option value="RioGrandeSul">Rio Grande do Sul</option>
-                  <option value="Rondonia">Rondonia</option>
-                  <option value="Roraima">Roraima</option>
-                  <option value="SantaCatarina">Santa Catarina</option>
-                  <option value="SaoPaulo">São Paulo</option>
-                  <option value="Sergipe">Sergipe</option>
-                  <option value="Tocantis">Tocantis</option>
-                </select>                  
-                </div>
-                <div className='form-group text-center'>
-                  <button className='btn btn-block btn-primary rounded-0 mr-auto ml-auto' onClick={Save}>
-                    Quero ser um Parceiro
-                  </button>
-                </div>
+                  onChange={e => setUF(e.target.value)}>
+                  <option value="AC">AC</option>
+                  <option value="AL">AL</option>
+                  <option value="AP">AP</option>
+                  <option value="AM">AM</option>
+                  <option value="BA">BA</option>
+                  <option value="CE">CE</option>
+                  <option value="DF">DF</option>
+                  <option value="ES">ES</option>
+                  <option value="GO">GO</option>
+                  <option value="MA">MA</option>
+                  <option value="MT">MT</option>
+                  <option value="MS">MS</option>
+                  <option value="MG">MG</option>
+                  <option value="PA">PA</option>
+                  <option value="PB">PB</option>
+                  <option value="PR">PR</option>                  
+                  <option value="PE">PE</option>
+                  <option value="PI">PI</option>
+                  <option value="RJ">RJ</option>
+                  <option value="RN">RN</option>
+                  <option value="RS">RS</option>
+                  <option value="RO">RO</option>
+                  <option value="RR">RR</option>
+                  <option value="SC">SC</option>
+                  <option value="SP">SP</option>
+                  <option value="SE">SE</option>
+                  <option value="TO">TO</option>
+                </select>
+              </div>              
 
+              <div class="input-group flex-nowrap">
+                <span class="input-group-text" id="addon-wrapping">Telefone Comercial</span>
+                <input 
+                  id="comercial"
+                  type="text" 
+                  class="form-control" 
+                  placeholder="(99) 9 9999-9999"
+                  value={comercial}
+                  onChange={e => setComercial(e.target.value)} />
+                <span class="input-group-text" id="addon-wrapping">Celular</span>
+                <input 
+                  id="celular"
+                  type="text" 
+                  class="form-control" 
+                  placeholder="(99) 9 9999-9999"
+                  value={celular}
+                  onChange={e => setCelular(e.target.value)} />
+              </div>                                     
+              <div class="input-group flex-nowrap">
+                <span class="input-group-text" id="addon-wrapping">email</span>
+                <input 
+                  id="email"
+                  type="email" 
+                  class="form-control" 
+                  placeholder="Informe um email válido"
+                  value={email}
+                  onChange={e => setEmail(e.target.value)} />
+              </div>
+              <div className='form-group text-center'>
+                <button className='btn btn-block btn-primary rounded-0 mr-auto ml-auto' onClick={Save}>
+                  Quero ser um Parceiro
+                </button>
+              </div>
             </div>
           </div>
         </div>

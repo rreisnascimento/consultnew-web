@@ -163,6 +163,7 @@ const Parceiro = () => {
                 <select className='form-group form-control rounded-0' 
                   value={uf} 
                   onChange={e => setUF(e.target.value)}>
+                  <option value=""></option>
                   <option value="AC">AC</option>
                   <option value="AL">AL</option>
                   <option value="AP">AP</option>

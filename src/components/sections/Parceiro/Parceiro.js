@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import Section from '../../../HOC/Section';
-
-const baseURL = "https://consultnew-api.herokuapp.com";
+import api from '../../../service/api';
 
 const Parceiro = () => {
   
@@ -18,6 +16,8 @@ const Parceiro = () => {
   const [comercial, setComercial] = useState();
   const [celular, setCelular] = useState();
   const [email, setEmail] = useState();
+  const [visible, setVisible] = useState(false);
+  const [message, setMessage] = useState("");  
 
   function ClearFields() {
     setNome("");
@@ -32,11 +32,12 @@ const Parceiro = () => {
     setComercial("");
     setCelular("");
     setEmail("");
+    setVisible(false);
+    setMessage("");
   };
   
   async function BuscarCEP() {
     const cepFilter = cep?.replace(/[^0-9]/g, '');
-
     if (cepFilter?.length == 8) {
       fetch(`https://viacep.com.br/ws/${cepFilter}/json/`)
         .then((res) => res.json())
@@ -50,10 +51,15 @@ const Parceiro = () => {
   };
 
   async function Save() {
-
-    const reqPOST = { nome, clinica, especialidade, cep, endereco, complemento, bairro, cidade, uf, comercial, celular, email };
-    const response = await axios.post(`${baseURL}/precadastro/create`, reqPOST);
-    ClearFields();
+    let res = await api.createParceiro(nome, clinica, especialidade, cep, endereco, complemento, bairro, cidade, uf, comercial, celular, email);
+    if (res.status == 400) {
+      setVisible(true);
+      setMessage(res.message);
+    } else if (res.status == 201) {
+      setVisible(false);
+      setMessage("");      
+      ClearFields();
+    };
   };
 
   useEffect(() => {
@@ -75,94 +81,54 @@ const Parceiro = () => {
         <div className='section-content'>
           <div className='row'>
             <div className='col-md-9 col-lg-7 mr-auto ml-auto'>
-
               <div class="input-group flex-nowrap">
-                <span class="input-group-text" id="addon-wrapping">Profissional</span>
-                <input 
-                  id="profissional"
-                  type="text" 
-                  class="form-control" 
-                  placeholder="Nome do Profissional"
-                  value={nome}
-                  onChange={e => setNome(e.target.value)} />
+                <span class="input-group-text" id="addon-wrapping">Nome do Profissional</span>
+                <input id="profissional" type="text" class="form-control"                   
+                  value={nome} onChange={e => setNome(e.target.value)} />   
               </div>
 
               <div class="input-group flex-nowrap">
                 <span class="input-group-text" id="addon-wrapping">Clínica</span>
-                <input 
-                  id="clinica"
-                  type="text" 
-                  class="form-control" 
-                  placeholder="Nome da Clinica"
-                  value={clinica}
-                  onChange={e => setClinica(e.target.value)} />
+                <input id="clinica" type="text" class="form-control" 
+                  value={clinica} onChange={e => setClinica(e.target.value)} />
               </div>              
 
               <div class="input-group flex-nowrap">
                 <span class="input-group-text" id="addon-wrapping">Especialidade</span>
-                <input 
-                  id="especialidade"
-                  type="text" 
-                  class="form-control" 
-                  placeholder="Informe a Especialidade"
-                  value={especialidade}
-                  onChange={e => setEspecialidade(e.target.value)} />
+                <input id="especialidade" type="text" class="form-control" 
+                  value={especialidade} onChange={e => setEspecialidade(e.target.value)} />
               </div>
 
               <div class="input-group flex-nowrap">
                 <span class="input-group-text" id="addon-wrapping">CEP</span>
-                <input 
-                  id="cep"
-                  type="text" 
-                  class="form-control" 
+                <input id="cep" type="text" class="form-control" 
                   placeholder="99999-999"
-                  value={cep}
-                  onChange={e => setCep(e.target.value)} />
+                  value={cep} onChange={e => setCep(e.target.value)} />
                 <button className='btn btn-primary rounded-0' onClick={BuscarCEP}>Buscar Endereço</button>
               </div>
 
               <div class="input-group flex-nowrap">
                 <span class="input-group-text" id="addon-wrapping">Endereço</span>
-                <input 
-                  id="endereco"
-                  type="text" 
-                  class="form-control" 
-                  placeholder="Logradouro, 999"
-                  value={endereco}
-                  onChange={e => setEndereco(e.target.value)} />
+                <input id="endereco" type="text" class="form-control" 
+                  value={endereco} onChange={e => setEndereco(e.target.value)} />     
               </div>                            
 
               <div class="input-group flex-nowrap">
                 <span class="input-group-text" id="addon-wrapping">Complemento</span>
-                <input 
-                  id="complemento"
-                  type="text" 
-                  class="form-control" 
-                  placeholder="Casa / Apartamento / Sobre Loja"
-                  value={complemento}
-                  onChange={e => setComplemento(e.target.value)} />
+                <input id="complemento" type="text" class="form-control" 
+                  value={complemento} onChange={e => setComplemento(e.target.value)} />
                 <span class="input-group-text" id="addon-wrapping">Bairro</span>
-                <input 
-                  id="bairro"
-                  type="text" 
-                  class="form-control" 
-                  placeholder="Centro"
-                  value={bairro}
-                  onChange={e => setBairro(e.target.value)} />
+                <input id="bairro" type="text" class="form-control" 
+                  value={bairro} onChange={e => setBairro(e.target.value)} />
               </div>              
+              
               <div class="input-group flex-nowrap">
                 <span class="input-group-text" id="addon-wrapping">Cidade</span>
-                <input 
-                  id="cidade"
-                  type="text" 
-                  class="form-control" 
-                  placeholder="Informe a Cidade"
-                  value={cidade}
-                  onChange={e => setCidade(e.target.value)} />
+                <input id="cidade" type="text" class="form-control" 
+                  value={cidade} onChange={e => setCidade(e.target.value)} />
                 <span class="input-group-text" id="addon-wrapping">Estado</span>
                 <select className='form-group form-control rounded-0' 
-                  value={uf} 
-                  onChange={e => setUF(e.target.value)}>
+                  value={uf} onChange={e => setUF(e.target.value)}>
                   <option value=""></option>
                   <option value="AC">AC</option>
                   <option value="AL">AL</option>
@@ -196,33 +162,25 @@ const Parceiro = () => {
 
               <div class="input-group flex-nowrap">
                 <span class="input-group-text" id="addon-wrapping">Telefone Comercial</span>
-                <input 
-                  id="comercial"
-                  type="text" 
-                  class="form-control" 
+                <input id="comercial" type="text" class="form-control" 
                   placeholder="(99) 9 9999-9999"
-                  value={comercial}
-                  onChange={e => setComercial(e.target.value)} />
+                  value={comercial} onChange={e => setComercial(e.target.value)} />
                 <span class="input-group-text" id="addon-wrapping">Celular</span>
-                <input 
-                  id="celular"
-                  type="text" 
-                  class="form-control" 
+                <input id="celular" type="text" class="form-control" 
                   placeholder="(99) 9 9999-9999"
                   value={celular}
                   onChange={e => setCelular(e.target.value)} />
               </div>                                     
               <div class="input-group flex-nowrap">
                 <span class="input-group-text" id="addon-wrapping">email</span>
-                <input 
-                  id="email"
-                  type="email" 
-                  class="form-control" 
+                <input id="email" type="email" class="form-control" 
                   placeholder="Informe um email válido"
-                  value={email}
-                  onChange={e => setEmail(e.target.value)} />
+                  value={email} onChange={e => setEmail(e.target.value)} />
               </div>
               <div className='form-group text-center'>
+                {visible && (
+                  <span className='input-test'>{message}</span>
+                )}                
                 <button className='btn btn-block btn-primary rounded-0 mr-auto ml-auto' onClick={Save}>
                   Quero ser um Parceiro
                 </button>

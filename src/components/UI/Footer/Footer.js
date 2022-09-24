@@ -97,10 +97,7 @@ const Footer = () => {
               <div className='social-media mt-4'>
                 <a href='!#' className='text-light'>
                   <i className='fab fa-facebook-f mr-4' />
-                </a>
-                <a href='!#' className='text-light'>
-                  <i className='fab fa-twitter mr-4' />
-                </a>
+                </a>                
                 <a href='!#' className='text-light'>
                   <i className='fab fa-instagram mr-4' />
                 </a>
@@ -110,7 +107,7 @@ const Footer = () => {
         </div>
       </div>
       <div className='bottom-footer pt-3 pb-3 text-center'>
-        <small>© All Right Reserved. Design By Mohamed Azouaoui</small>
+        <small>© All Right Reserved. Design By Rogério Nascimento Reis</small>
       </div>
     </footer>
   );
